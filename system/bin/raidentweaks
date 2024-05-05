@@ -536,7 +536,8 @@ battery() {
   		write "${cpu}schedutil/down_rate_limit_us" "$((4 * SCHED_PERIOD_BATTERY / 1000))"
   		write "${cpu}schedutil/pl" "0"
   		write "${cpu}schedutil/iowait_boost_enable" "0"
-  		write "${cpu}schedutil/rate_limit_us" "$((4 * SCHED_PERIOD_BATTERY / 1000))"write "${cpu}schedutil/hispeed_load" "99"
+  		write "${cpu}schedutil/rate_limit_us" "$((4 * SCHED_PERIOD_BATTERY / 1000))"
+                write "${cpu}schedutil/hispeed_load" "99"
   		write "${cpu}schedutil/hispeed_freq" "$cpumfreq"
   	elif [[ "$avail_govs" == *"interactive"* ]]; then
   		write "${cpu}scaling_governor" interactive
