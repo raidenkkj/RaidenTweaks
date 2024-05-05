@@ -1053,11 +1053,11 @@ balanced() {
   fi
   
 # Enable dvfs
-  if [[ -e "/proc/mali/dvfs_enable" ]];then
+  if [[ -e "/proc/mali/dvfs_enable" ]]; then
   	write "/proc/mali/dvfs_enable" "1"
   fi
   
-  if [[ -e "/sys/module/pvrsrvkm/parameters/gpu_dvfs_enable" ]];then
+  if [[ -e "/sys/module/pvrsrvkm/parameters/gpu_dvfs_enable" ]]; then
   	write "/sys/module/pvrsrvkm/parameters/gpu_dvfs_enable" "1"
   fi
   
