@@ -2050,7 +2050,8 @@ gaming() {
   
   # Schedtune Tweaks
   if [[ -d "/dev/stune/" ]]; then
-  	write "/dev/stune/background/schedtune.boost" "0"write "/dev/stune/background/schedtune.prefer_idle" "0"
+  	write "/dev/stune/background/schedtune.boost" "0"
+        write "/dev/stune/background/schedtune.prefer_idle" "0"
   	write "/dev/stune/foreground/schedtune.boost" "50"
   	write "/dev/stune/foreground/schedtune.prefer_idle" "0"
   	write "/dev/stune/rt/schedtune.boost" "0"
