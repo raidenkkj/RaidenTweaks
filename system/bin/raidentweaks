@@ -30,6 +30,9 @@
 # Logs
 RLOG=/sdcard/.RTKS/raidenTweaks.log
 
+# Modpath
+modpath="/data/adb/modules/RTKS/"
+
 # Mod Util
 . "${modpath}"/mod-util.sh || exit $?
 
@@ -316,9 +319,6 @@ totalram=$(free -m | awk '/Mem:/{print $2}')
 
 # Variable to battery actual capacity
 percentage=$(dumpsys battery | grep level | awk '{print $2}')
-
-# Modpath
-modpath="/data/adb/modules/RTKS/"
 
 # Automatic Profiles
 automatic() {
