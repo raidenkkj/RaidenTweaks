@@ -177,9 +177,6 @@ loadBar=' '			# Load UI
   G=''; R=''; Y=''; B=''; V=''; Bl=''; C=''; W=''; N=''; BGBL=''; loadBar='=';
 }
 
-# Variable for menu, will define if the menu has ever been opened
-FIRST_TIME=true
-
 # Variables for branches
 STABLE_URL="https://raw.githubusercontent.com/raidenkkj/raidenTweaks/stable"
 BETA_URL="https://raw.githubusercontent.com/raidenkkj/raidenTweaks/beta"
@@ -366,6 +363,19 @@ help_text() {
   echo "${Y}  -h --help ${B}[Show this message]${N}"
   echo ""
   exit 0
+}
+
+# Check official devices
+# It will check if the device is 100% compatible with raidentweaks
+check_official_devices() {
+  if [[ "$DEVICE" == "alioth" || "$DEVICE" == "aliothin" || "$DEVICE" == "zb634kl" ]]; then
+    if [[ "$DEVICE" == "alioth" || "$DEVICE" == "aliothin" ]]; then
+      setenforce 0
+    fi
+    echo "${Y}[*] Working mode:${B} Officially${N}"
+  else
+    echo "${Y}[*] Working mode:${B} Unofficially${N}"
+  fi
 }
 
 # Check internal storage

@@ -30,10 +30,8 @@
 # Logs
 RLOG=/sdcard/.RTKS/raidenTweaks.log
 
-# Mod Util & raidenTweaks.conf
+# Mod Util
 . "${modpath}"/mod-util.sh || exit $?
-check_internal_storage
-. "${internal_storage}"raidenTweaks.conf || exit $?
 
 if [[ -e $RLOG ]]; then
   rm $RLOG

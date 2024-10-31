@@ -16,10 +16,10 @@
 modpath="/data/adb/modules_update/RTKS/"
 
 # Enable 64-bit dex2oat and disable ARMv8.5-A memory tagging for 64-bit architecture
-[[ "$IS64BIT" == "true" ]] && {
-  sed -i '/dalvik.vm.dex2oat64.enabled/s/.*/dalvik.vm.dex2oat64.enabled=true/' "${modpath}system.prop"
-  sed -i '/arm64.memtag.process.system_server/s/.*/arm64.memtag.process.system_server=off/' "${modpath}system.prop"
-}
+#[[ "$IS64BIT" == "true" ]] && {
+#  sed -i '/dalvik.vm.dex2oat64.enabled/s/.*/dalvik.vm.dex2oat64.enabled=true/' "${modpath}system.prop"
+#  sed -i '/arm64.memtag.process.system_server/s/.*/arm64.memtag.process.system_server=off/' "${modpath}system.prop"
+#}
 
 # Check busybox binary
 busybox_path=$(find /system/xbin /sbin /system/bin -name busybox 2>/dev/null | grep -v 'No such file or directory')

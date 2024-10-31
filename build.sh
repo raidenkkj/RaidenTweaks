@@ -43,7 +43,8 @@ telegram_send_message() {
   curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
     -d chat_id="$TELEGRAM_CHAT_ID" \
     -d text="$message" \
-    -d parse_mode="MarkdownV2" > /dev/null 2>&1
+    -d parse_mode="MarkdownV2" \
+    -d disable_web_page_preview=true > /dev/null
 }
 
 # Function to handle the interrupt signal (Ctrl+C)
@@ -58,10 +59,19 @@ handle_interrupt() {
 # Register the signal handler for SIGINT (Ctrl+C)
 trap handle_interrupt SIGINT
 
-# Function to upload file to transfer.sh
+# Function to upload file to gofile.io
 upload() {
-  response=$(curl -s --upload-file "$1" https://transfer.sh/"$1")
-  url=$(echo "$response" | awk -F"[ \t\n\r]+" '{print $NF}')
+  echo ""
+  response=$(curl -# -F "name=$(basename "$1")" -F "file=@$1" "https://store1.gofile.io/contents/uploadfile")
+  upload_status=$(echo "$response" | grep -Po '(?<="status":")[^"]*')
+
+  if [ "$upload_status" = 'ok' ]; then
+    url=$(echo "$response" | grep -Po '(?<="downloadPage":")[^"]*')
+    md5=$(echo "$response" | grep -Po '(?<="md5":")[^"]*')
+  else
+    telegram_send_message "*Upload failed!*"
+    exit
+  fi
 }
 
 printf "\033c"
@@ -73,6 +83,10 @@ read -r -p ${boldgreen}'Codename: '${blue} cdnm
 read -r -p ${boldgreen}'Version: '${blue} vers
 read -r -p ${boldgreen}'Version code: '${blue} vcode
 read -r -p ${boldgreen}'Release type (test, rel or pling): '${blue} release_type
+#read -r -p ${boldgreen}'Have comment (yes or no): '${blue} have_comment
+#if [[ "$(echo "$have_comment" | tr '[:upper:]' '[:lower:]')" =~ ^(yes|y)$ ]]; then
+#  read -r -p ${boldgreen}'Comment: '${blue} comment
+#fi
 
 init=$(date +%s)
 
@@ -98,7 +112,6 @@ fi
 
 echo "${default}${bold}Zipping ${blink}$rname-$cdnm-$year$month$day$hour$minute..."
 echo ""
-
 
 zip -0 -r9 -ll "$rname-$cdnm-$year$month$day$hour$minute.zip" . -x '*.bak*' -x '*.git*' -x '*RaidenTweaks.apk*' -x '*RDToast.apk*' -x '*mod-util.sh*' -x '*fstrim*' -x '*lmkmenu*' -x '*cleaner*' -x '*changelog.md*' -x '*raidenauto*' -x '*raidentweaks*' -x '*rtksmenu*' -x '*images*' -x '*build.sh*' -x '*unlockermenu*' -x '*conf*'
 
@@ -129,11 +142,11 @@ exec_time=$((exit - init))
   echo ""
   echo "${boldgreen}Build done in "$((exec_time / 60))" minutes and $exec_time seconds!${blue} Check the out folder to the finished build."
   if [[ "$(echo "$release_type" | tr '[:upper:]' '[:lower:]')" == "test" ]]; then
-    telegram_send_message "_*raidenTweaks \| New Test Release!*_ %0A%0A*Developer:* _@raidenkk_ %0A*Release filename:* _$rname-$cdnm-$year$month$day$hour$minute.zip_ %0A*Release date:* _${bddate} ${hour}:${minute}:${seconds}_ %0A*MD5:* _${md5}_ %0A*Size:* _${size}_ %0A*Download:* _[transfer.sh](${download_link})_ %0A%0A*Join:* _@raidenprjkts_"
+    telegram_send_message "_*raidenTweaks \| New Test Release!*_ %0A%0A*Developer:* _@raidenkk_ %0A*Release filename:* _$rname-$cdnm-$year$month$day$hour$minute.zip_ %0A*Release date:* _${bddate} ${hour}:${minute}:${seconds}_ %0A*MD5:* _${md5}_ %0A*Size:* _${size}_ %0A*Download:* _[GoFile](${download_link})_ %0A%0A*Join:* _@raidenprjkts_"
   elif [[ "$(echo "$release_type" | tr '[:upper:]' '[:lower:]')" == "rel" ]]; then
-    telegram_send_message "_*raidenTweaks \| New Release!*_ %0A%0A*Developer:* _@raidenkk_ %0A*Release filename:* _$rname-$cdnm-$year$month$day$hour$minute.zip_ %0A*Release date:* _${bddate} ${hour}:${minute}:${seconds}_ %0A*MD5:* _${md5}_ %0A*Size:* _${size}_ %0A*Download:* _[transfer.sh](${download_link})_ %0A%0A*Join:* _@raidenprjkts_"
+    telegram_send_message "_*raidenTweaks \| New Release!*_ %0A%0A*Developer:* _@raidenkk_ %0A*Release filename:* _$rname-$cdnm-$year$month$day$hour$minute.zip_ %0A*Release date:* _${bddate} ${hour}:${minute}:${seconds}_ %0A*MD5:* _${md5}_ %0A*Size:* _${size}_ %0A*Download:* _[GoFile](${download_link})_ %0A%0A*Join:* _@raidenprjkts_"
     elif [[ "$(echo "$release_type" | tr '[:upper:]' '[:lower:]')" == "pling" ]]; then
-    telegram_send_message "_*raidenTweaks \| New Release!*_ %0A%0A*Developer:* _@raidenkk_ %0A*Release filename:* _$rname-$cdnm-$year$month$day$hour$minute.zip_ %0A*Release date:* _${bddate} ${hour}:${minute}:${seconds}_ %0A*MD5:* _${md5}_ %0A*Size:* _${size}_ %0A*Download:* _[transfer.sh](https://www.pling.com/p/1597979/)_ %0A%0A*Join:* _@raidenprjkts_"
+    telegram_send_message "_*raidenTweaks \| New Release!*_ %0A%0A*Developer:* _@raidenkk_ %0A*Release filename:* _$rname-$cdnm-$year$month$day$hour$minute.zip_ %0A*Release date:* _${bddate} ${hour}:${minute}:${seconds}_ %0A*MD5:* _${md5}_ %0A*Size:* _${size}_ %0A*Download:* _[GoFile](https://www.pling.com/p/1597979/)_ %0A%0A*Join:* _@raidenprjkts_"
   fi
   exit 0
 } || {

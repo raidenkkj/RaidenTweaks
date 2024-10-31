@@ -232,25 +232,6 @@ magisk=$(magisk -V)
 
 # Main menu
 main_menu() {
-  if [[ "$FIRST_TIME" = "true" ]]; then
-    printf "\033c"
-    case $(getprop persist.sys.locale) in
-        "en-US" | "en-GB")
-            echo "${B}Welcome to the menu! It seems it's your first time here. You're officially part of the club now!${N}"
-            ;;
-        "pt-BR")
-            echo "${B}Bem vindo ao menu! Parece que é sua primeira vez aqui. Você faz parte oficialmente do clube agora!${N}"
-            ;;
-        *)
-            echo "${B}Welcome to the menu! It seems it's your first time here. You're officially part of the club now!${N}"
-            ;;
-    esac
-    
-    sleep 6
-    sed -i 's/FIRST_TIME="false"/FIRST_TIME="true"/' ${modpath}mod-util.sh
-    printf "\033c"
-  fi
-
   echo -e '\n'
   printf "\033c"
   echo "${C}╔══════════════════════════════════════════════╗${N}"
@@ -265,6 +246,8 @@ main_menu() {
   echo "${Y}[*] Version:${B} $(grep_prop version "$modpath"module.prop) - $(grep_prop codename "$modpath"module.prop) ${N}"
   echo ""
   echo "${Y}[*] Magisk version:${B} $magisk ${N}"
+  echo ""
+  check_official_devices
   echo ""
   echo "${Y}[*] Thermal state:${B} $ts ${N}"
   echo ""
