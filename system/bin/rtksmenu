@@ -260,10 +260,10 @@ main_menu() {
   echo ""
   if [[ "$DETECTED_SU" == "KSU" ]]; then
     echo "${Y}[*] KernelSU version:${B} $ksu ${N}"
-  elif [[ "$DETECTED_SU" == "KSU" ]]; then
+  elif [[ "$DETECTED_SU" == "Magisk" ]]; then
     echo "${Y}[*] Magisk version:${B} $magisk ${N}"
   else
-    echo "${Y}[*] Magisk version:${B} $DETECTED_SU ${N}"
+    echo "${Y}[*] Root version:${B} $DETECTED_SU ${N}"
   fi
   echo ""
   check_official_devices

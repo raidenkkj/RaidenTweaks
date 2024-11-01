@@ -311,8 +311,18 @@ arv=$(getprop ro.build.version.release)
 # Variable to device model
 dm=$(getprop ro.product.model)
 
-# Variable to get magisk version
-magisk=$(magisk -c)
+# Magisk version & KSU version
+magisk=$(magisk -V)
+ksu=$(ksu -V)
+
+# Check current root method
+if [[ -n "$magisk" ]]; then
+  DETECTED_SU="Magisk"
+elif [[ -n "$ksu" ]]; then
+  DETECTED_SU="KSU"
+else
+  DETECTED_SU="Unknown"
+fi
 
 # Variable to total device ram
 totalram=$(free -m | awk '/Mem:/{print $2}')
@@ -346,11 +356,18 @@ automatic() {
   kmsg1 "Android version:          $arv"
   kmsg1 "GPU model:                $GPU_MODEL"
   kmsg1 "Device:                   $dm"
-  kmsg1 "RaidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
-  kmsg1 "RaidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
+  kmsg1 "raidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
+  kmsg1 "raidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
   kmsg1 "Battery charge level:     $percentage%"
   kmsg1 "Device total RAM:         $totalram MB"
-  kmsg1 "Magisk:                   $magisk"
+   if [[ "$DETECTED_SU" == "KSU" ]]; then
+    kmsg1 "Magisk:                   $ksu"
+  elif [[ "$DETECTED_SU" == "Magisk" ]]; then
+    kmsg1 "Magisk:                   $magisk"
+  else
+    kmsg1 "Magisk:                   $DETECTED_SU"
+  fi
+ 
   kmsg1 " "
   kmsg1 "--------------------------------------------------------------"
   kmsg1 " "
@@ -415,11 +432,17 @@ battery() {
   kmsg1 "Android version:          $arv"
   kmsg1 "GPU model:                $GPU_MODEL"
   kmsg1 "Device:                   $dm"
-  kmsg1 "RaidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
-  kmsg1 "RaidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
+  kmsg1 "raidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
+  kmsg1 "raidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
   kmsg1 "Battery charge level:     $percentage%"
   kmsg1 "Device total RAM:         $totalram MB"
-  kmsg1 "Magisk:                   $magisk"
+  if [[ "$DETECTED_SU" == "KSU" ]]; then
+    kmsg1 "Magisk:                   $ksu"
+  elif [[ "$DETECTED_SU" == "Magisk" ]]; then
+    kmsg1 "Magisk:                   $magisk"
+  else
+    kmsg1 "Magisk:                   $DETECTED_SU"
+  fi
   kmsg1 " "
   kmsg1 "--------------------------------------------------------------"
   kmsg1 " "
@@ -900,11 +923,17 @@ balanced() {
   kmsg1 "Android version:          $arv"
   kmsg1 "GPU model:                $GPU_MODEL"
   kmsg1 "Device:                   $dm"
-  kmsg1 "RaidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
-  kmsg1 "RaidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
+  kmsg1 "raidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
+  kmsg1 "raidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
   kmsg1 "Battery charge level:     $percentage%"
   kmsg1 "Device total RAM:         $totalram MB"
-  kmsg1 "Magisk:                   $magisk"
+  if [[ "$DETECTED_SU" == "KSU" ]]; then
+    kmsg1 "Magisk:                   $ksu"
+  elif [[ "$DETECTED_SU" == "Magisk" ]]; then
+    kmsg1 "Magisk:                   $magisk"
+  else
+    kmsg1 "Magisk:                   $DETECTED_SU"
+  fi
   kmsg1 " "
   kmsg1 "--------------------------------------------------------------"
   kmsg1 " "
@@ -1363,11 +1392,17 @@ performance() {
   kmsg1 "Android version:          $arv"
   kmsg1 "GPU model:                $GPU_MODEL"
   kmsg1 "Device:                   $dm"
-  kmsg1 "RaidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
-  kmsg1 "RaidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
+  kmsg1 "raidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
+  kmsg1 "raidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
   kmsg1 "Battery charge level:     $percentage%"
   kmsg1 "Device total RAM:         $totalram MB"
-  kmsg1 "Magisk:                   $magisk"
+  if [[ "$DETECTED_SU" == "KSU" ]]; then
+    kmsg1 "Magisk:                   $ksu"
+  elif [[ "$DETECTED_SU" == "Magisk" ]]; then
+    kmsg1 "Magisk:                   $magisk"
+  else
+    kmsg1 "Magisk:                   $DETECTED_SU"
+  fi
   kmsg1 " "
   kmsg1 "--------------------------------------------------------------"
   kmsg1 " "
@@ -1854,11 +1889,17 @@ gaming() {
   kmsg1 "Android version:          $arv"
   kmsg1 "GPU model:                $GPU_MODEL"
   kmsg1 "Device:                   $dm"
-  kmsg1 "RaidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
-  kmsg1 "RaidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
+  kmsg1 "raidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
+  kmsg1 "raidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
   kmsg1 "Battery charge level:     $percentage%"
   kmsg1 "Device total RAM:         $totalram MB"
-  kmsg1 "Magisk:                   $magisk"
+  if [[ "$DETECTED_SU" == "KSU" ]]; then
+    kmsg1 "Magisk:                   $ksu"
+  elif [[ "$DETECTED_SU" == "Magisk" ]]; then
+    kmsg1 "Magisk:                   $magisk"
+  else
+    kmsg1 "Magisk:                   $DETECTED_SU"
+  fi
   kmsg1 " "
   kmsg1 "--------------------------------------------------------------"
   kmsg1 " "
@@ -2346,11 +2387,17 @@ thermal() {
   kmsg1 "Android version:          $arv"
   kmsg1 "GPU model:                $GPU_MODEL"
   kmsg1 "Device:                   $dm"
-  kmsg1 "RaidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
-  kmsg1 "RaidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
+  kmsg1 "raidenTweaks version:     $(grep_prop version ${modpath}module.prop)"
+  kmsg1 "raidenTweaks codename:    $(grep_prop codename ${modpath}module.prop)"
   kmsg1 "Battery charge level:     $percentage%"
   kmsg1 "Device total RAM:         $totalram MB"
-  kmsg1 "Magisk:                   $magisk"
+  if [[ "$DETECTED_SU" == "KSU" ]]; then
+    kmsg1 "Magisk:                   $ksu"
+  elif [[ "$DETECTED_SU" == "Magisk" ]]; then
+    kmsg1 "Magisk:                   $magisk"
+  else
+    kmsg1 "Magisk:                   $DETECTED_SU"
+  fi
   kmsg1 " "
   kmsg1 "--------------------------------------------------------------"
   kmsg1 " "
