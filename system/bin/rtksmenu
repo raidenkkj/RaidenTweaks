@@ -224,8 +224,21 @@ sdk=$(getprop ro.build.version.sdk)
 # Developer
 dev="raidenkk"
 
-# Magisk version
+# Check busybox binary
+busybox_path=$(find /system/xbin /sbin /system/bin -name busybox 2>/dev/null | grep -v 'No such file or directory')
+
+# Magisk version & KSU version
 magisk=$(magisk -V)
+ksu=$(ksu -V)
+
+# Check current root method
+if [[ -n "$magisk" ]]; then
+  DETECTED_SU="Magisk"
+elif [[ -n "$ksu" ]]; then
+  DETECTED_SU="KSU"
+else
+  DETECTED_SU="Unknown"
+fi
 
 # Low power
 [[ "$(settings get global low_power)" == "1" ]] && low_power_mode="Enabled" || low_power_mode="Disabled"
@@ -245,7 +258,13 @@ main_menu() {
   echo ""
   echo "${Y}[*] Version:${B} $(grep_prop version "$modpath"module.prop) - $(grep_prop codename "$modpath"module.prop) ${N}"
   echo ""
-  echo "${Y}[*] Magisk version:${B} $magisk ${N}"
+  if [[ "$DETECTED_SU" == "KSU" ]]; then
+    echo "${Y}[*] KernelSU version:${B} $ksu ${N}"
+  elif [[ "$DETECTED_SU" == "KSU" ]]; then
+    echo "${Y}[*] Magisk version:${B} $magisk ${N}"
+  else
+    echo "${Y}[*] Magisk version:${B} $DETECTED_SU ${N}"
+  fi
   echo ""
   check_official_devices
   echo ""
@@ -312,8 +331,12 @@ main_menu() {
   else
     echo "${Y}[4*] GApps ${R}(Disabled - Incompatibility)${N}"
     echo ""
-  fi    
-  echo "${Y}[5] Fstrim on some partitions ${C}This will fstrim specific partitions)${N}"
+  fi
+  if [[ -n "$busybox_path" ]]; then
+    echo "${Y}[5] Fstrim on some partitions ${C}(This will fstrim specific partitions)${N}"
+  else
+    echo "${Y}[5*] Fstrim on some partitions ${R}(Disabled - Need busybox)${N}"
+  fi
   echo ""
   echo "${Y}[6] Optimize application package ${C}(This will optimize the application packages)${N}"
   echo ""
@@ -886,7 +909,7 @@ clear_ram_heavy() {
   am kill-all
   sleep 2
   echo ""
-  clear_ram_advanced
+  clear_ram_advanced_base
   echo ""
   old_ram=$(cat /data/local/tmp/temp_ram_usage.txt | tr -d '%')
   new_ram=$(cat /data/local/tmp/temp_ram_usage_after.txt | tr -d '%')
@@ -1085,6 +1108,7 @@ return_to_main_menu() {
 
 # Go out
 go_out() {
+  default_selinux_for_alioth
   printf "\033c"
   echo ""
   bye_messages=("Bye bye, see you next time." 
@@ -1164,7 +1188,7 @@ while [[ $# -gt 0 ]]; do
         am kill-all
         sleep 2
         echo ""
-        clear_ram_advanced
+        clear_ram_advanced_base
         echo ""
         echo "${G}[*] Done.${N}"
         echo ""

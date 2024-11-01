@@ -177,6 +177,9 @@ loadBar=' '			# Load UI
   G=''; R=''; Y=''; B=''; V=''; Bl=''; C=''; W=''; N=''; BGBL=''; loadBar='=';
 }
 
+# SeLinux Status
+selinux_status=$(getenforce)
+
 # Variables for branches
 STABLE_URL="https://raw.githubusercontent.com/raidenkkj/raidenTweaks/stable"
 BETA_URL="https://raw.githubusercontent.com/raidenkkj/raidenTweaks/beta"
@@ -370,11 +373,23 @@ help_text() {
 check_official_devices() {
   if [[ "$DEVICE" == "alioth" || "$DEVICE" == "aliothin" || "$DEVICE" == "zb634kl" ]]; then
     if [[ "$DEVICE" == "alioth" || "$DEVICE" == "aliothin" ]]; then
-      setenforce 0
+      if [[ "$selinux_status" == "Enforcing" ]]; then
+        default_selinux="Enforcing"
+        setenforce 0
+      fi
     fi
     echo "${Y}[*] Working mode:${B} Officially${N}"
   else
     echo "${Y}[*] Working mode:${B} Unofficially${N}"
+  fi
+}
+
+# Return selinux to default (only for alioth)
+default_selinux_for_alioth() {
+  if [[ "$DEVICE" == "alioth" || "$DEVICE" == "aliothin" ]]; then
+    if [[ "$default_selinux" == "Enforcing" ]]; then
+      setenforce 1
+    fi
   fi
 }
 
@@ -476,7 +491,7 @@ update_files() {
 
 # Clear ram advanced
 # Look for applications that are running and force stop them
-clear_ram_advanced() {
+clear_ram_advanced_base() {
   # File path of the configuration file
   check_internal_storage
   config_file="${internal_storage}packages.cfg"
